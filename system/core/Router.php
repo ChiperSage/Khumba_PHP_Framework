@@ -1,35 +1,36 @@
 <?php
-// system/core/Router.php
 
 class Router
 {
     public static function run()
     {
         $uri = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+        $segments = $uri ? explode('/', $uri) : [];
 
-        if ($uri === '') {
-            $controller = 'HomeController';
-            $method = 'index';
-        } else {
-            $parts = explode('/', $uri);
-            $controller = ucfirst($parts[0]) . 'Controller';
-            $method = $parts[1] ?? 'index';
-        }
+        $controller = isset($segments[0])
+            ? ucfirst($segments[0]) . 'Controller'
+            : 'HomeController';
+
+        $method = $segments[1] ?? 'index';
+        $params = array_slice($segments, 2);
 
         if (!class_exists($controller)) {
-            http_response_code(404);
-            echo 'Controller not found';
-            return;
+            self::error404('Controller not found');
         }
 
-        $obj = new $controller();
+        $object = new $controller();
 
-        if (!method_exists($obj, $method)) {
-            http_response_code(404);
-            echo 'Method not found';
-            return;
+        if (!method_exists($object, $method)) {
+            self::error404('Method not found');
         }
 
-        $obj->$method();
+        call_user_func_array([$object, $method], $params);
+    }
+
+    protected static function error404($msg)
+    {
+        http_response_code(404);
+        echo $msg;
+        exit;
     }
 }
