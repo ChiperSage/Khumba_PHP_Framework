@@ -1,4 +1,4 @@
-# Khumba_PHP_Framework
+# Khumba (PHP Framework)
 
 Khumba is a lightweight, pragmatic PHP framework designed for long-term stability and simplicity.
 
