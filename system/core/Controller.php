@@ -1,5 +1,10 @@
 <?php
 // system/core/Controller.php
+protected function render($view, $data = [])
+{
+    extract($data);
+    require BASE_PATH . '/app/view/layout.php';
+}
 
 class Controller
 {
