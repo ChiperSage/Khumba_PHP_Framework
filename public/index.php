@@ -5,6 +5,9 @@ define('BASE_PATH', dirname(__DIR__));
 
 require BASE_PATH . '/system/core/Router.php';
 require BASE_PATH . '/system/core/Controller.php';
+require BASE_PATH . '/system/core/Helper.php';
+
+csrf_verify();
 
 // simple autoload app
 spl_autoload_register(function ($class) {
