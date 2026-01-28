@@ -1,0 +1,34 @@
+#!/usr/bin/env php
+<?php
+
+if (php_sapi_name() !== 'cli') {
+    exit('CLI only');
+}
+
+$command = $argv[1] ?? null;
+$name    = $argv[2] ?? null;
+
+if ($command === 'make:controller' && $name) {
+    $class = ucfirst($name) . 'Controller';
+    $file  = __DIR__ . '/app/controller/' . $class . '.php';
+
+    if (file_exists($file)) {
+        exit("Controller already exists\n");
+    }
+
+    file_put_contents($file, "<?php
+
+class {$class} extends Controller
+{
+    public function index()
+    {
+        echo '{$class} ready';
+    }
+}
+");
+    echo "Controller created: {$class}\n";
+    exit;
+}
+
+echo "Usage:\n";
+echo "  php khumba make:controller Name\n";
