@@ -27,10 +27,12 @@ class Router
         call_user_func_array([$object, $method], $params);
     }
 
-    protected static function error404($msg)
+    protected static function error404()
     {
         http_response_code(404);
-        echo $msg;
+        require BASE_PATH . '/app/view/error/404.php';
         exit;
     }
 }
+
+
