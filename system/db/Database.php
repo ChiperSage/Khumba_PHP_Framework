@@ -1,4 +1,12 @@
 // system/db/Database.php
+
+public static function table($table)
+{
+    $pdo = self::connect();
+    $qb = new QueryBuilder($pdo);
+    return $qb->table($table);
+}
+
 class Database
 {
     protected static $pdo;
