@@ -1,6 +1,10 @@
 <?php
 // public/index.php
 
+require BASE_PATH . '/routes/web.php';
+Router::run();
+
+
 Env::load(BASE_PATH . '/.env');
 Session::start();
 
