@@ -1,6 +1,10 @@
 <?php
 // public/index.php
 
+Env::load(BASE_PATH . '/.env');
+Session::start();
+
+
 define('BASE_PATH', dirname(__DIR__));
 
 /*
