@@ -1,9 +1,64 @@
-# Khumba (PHP Framework)
+# Khumba Framework (PHP Framework)
 
-Khumba is a lightweight, pragmatic PHP framework designed for long-term stability and simplicity.
+Lightweight. Pragmatic. Stable. Long-term.
 
-It combines the speed and minimal structure of CodeIgniter with selected modern practices inspired by early Laravel, without heavy abstractions or deep directory hierarchies. Khumba supports backward compatibility (PHP N, N-1, N-2), uses a flat two-level MVC structure, and runs well on legacy servers and shared hosting.
+Khumba is a lightweight PHP framework designed to be pragmatic, stable, and long-lasting.
+It focuses on balancing modern structure, simplicity, performance, and backward compatibility.
 
-Up to this phase, Khumba provides a working bootstrap, simple MVC routing, centralized configuration, dynamic URL handling, basic request helpers, a lightweight PDO database layer, minimal templating with layouts, and essential security features such as XSS escaping and CSRF protection.
+Khumba is not an experimental or hyper-modern framework.
+It is built for real-world production use in:
 
-Khumba focuses on practicality: clear code, low maintenance cost, and features added only when they solve real problems.
+Small to medium applications
+Internal systems
+Lightweight SaaS products
+Long-term maintainable projects
+
+Key Features
+1. Lightweight MVC Core
+
+Flat 2-level directory structure
+Simple Router
+Minimal Base Controller
+Native PHP Views (no Blade / Twig)
+No external dependencies
+No service container
+No magic abstractions
+
+2. PDO-Based Database Core
+
+✔ Singleton PDO Connection
+Centralized connection management
+Portable across drivers
+Exception-based error handling
+
+✔ Lightweight Fluent Query Builder
+Supports:
+where()
+orderBy()
+limit()
+get()
+first()
+insert()
+update()
+delete()
+
+3. Minimal Hybrid Model Layer
+
+4. Design Philosophy
+Khumba follows these principles:
+Pragmatic over Trendy
+Simple but Powerful
+Backward Friendly
+Fast by Default
+Stability over Fancy Features
+
+Khumba intentionally avoids:
+Heavy service containers
+Mandatory Composer dependencies
+Over-abstracted architecture
+Rapid breaking changes
+
+Requirements
+PHP 5.6+
+PDO extension
+MySQL / MariaDB / PostgreSQL / SQLite
