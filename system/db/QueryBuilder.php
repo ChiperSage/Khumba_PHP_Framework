@@ -1,58 +1,60 @@
 <?php
-// system/db/QueryBuilder.php
-
 class QueryBuilder
 {
     protected $pdo;
     protected $table;
-    protected $select = '*';
-    protected $where = [];
+    protected $wheres = [];
     protected $bindings = [];
     protected $limit;
-    protected $offset;
-    protected $orderBy;
+    protected $order;
 
-    public function __construct(PDO $pdo)
+    public function __construct($pdo, $table)
     {
         $this->pdo = $pdo;
-    }
-
-    public function table($table)
-    {
         $this->table = $table;
-        return $this;
     }
 
-    public function select($fields = '*')
+    public function where($column, $value, $operator = '=')
     {
-        $this->select = $fields;
-        return $this;
-    }
-
-    public function where($column, $operator, $value)
-    {
-        $this->where[] = "$column $operator ?";
+        $this->wheres[] = "$column $operator ?";
         $this->bindings[] = $value;
         return $this;
     }
 
     public function orderBy($column, $direction = 'ASC')
     {
-        $this->orderBy = "$column $direction";
+        $this->order = "ORDER BY $column $direction";
         return $this;
     }
 
-    public function limit($limit, $offset = null)
+    public function limit($limit)
     {
-        $this->limit = (int)$limit;
-        $this->offset = $offset !== null ? (int)$offset : null;
+        $this->limit = "LIMIT " . intval($limit);
         return $this;
+    }
+
+    protected function buildSelect()
+    {
+        $sql = "SELECT * FROM {$this->table}";
+
+        if ($this->wheres) {
+            $sql .= " WHERE " . implode(' AND ', $this->wheres);
+        }
+
+        if ($this->order) {
+            $sql .= " " . $this->order;
+        }
+
+        if ($this->limit) {
+            $sql .= " " . $this->limit;
+        }
+
+        return $sql;
     }
 
     public function get()
     {
-        $sql = $this->buildSelect();
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->pdo->prepare($this->buildSelect());
         $stmt->execute($this->bindings);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -61,74 +63,46 @@ class QueryBuilder
     {
         $this->limit(1);
         $result = $this->get();
-        return isset($result[0]) ? $result[0] : null;
+        return $result ? $result[0] : null;
     }
 
-    public function insert(array $data)
+    public function insert($data)
     {
-        $columns = array_keys($data);
-        $values = array_values($data);
+        $columns = implode(',', array_keys($data));
+        $placeholders = implode(',', array_fill(0, count($data), '?'));
 
-        $placeholders = implode(',', array_fill(0, count($columns), '?'));
-
-        $sql = "INSERT INTO {$this->table} (" . implode(',', $columns) . ") VALUES ($placeholders)";
+        $sql = "INSERT INTO {$this->table} ($columns) VALUES ($placeholders)";
         $stmt = $this->pdo->prepare($sql);
-
-        return $stmt->execute($values);
+        return $stmt->execute(array_values($data));
     }
 
-    public function update(array $data)
+    public function update($data)
     {
-        $set = [];
-        $values = [];
-
+        $fields = [];
         foreach ($data as $key => $value) {
-            $set[] = "$key = ?";
-            $values[] = $value;
+            $fields[] = "$key = ?";
+            $this->bindings[] = $value;
         }
 
-        $sql = "UPDATE {$this->table} SET " . implode(',', $set);
+        $sql = "UPDATE {$this->table} SET " . implode(',', $fields);
 
-        if ($this->where) {
-            $sql .= " WHERE " . implode(' AND ', $this->where);
-            $values = array_merge($values, $this->bindings);
-        }
-
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute($values);
-    }
-
-    public function delete()
-    {
-        $sql = "DELETE FROM {$this->table}";
-
-        if ($this->where) {
-            $sql .= " WHERE " . implode(' AND ', $this->where);
+        if ($this->wheres) {
+            $sql .= " WHERE " . implode(' AND ', $this->wheres);
         }
 
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute($this->bindings);
     }
 
-    protected function buildSelect()
+    public function delete()
     {
-        $sql = "SELECT {$this->select} FROM {$this->table}";
+        $sql = "DELETE FROM {$this->table}";
 
-        if ($this->where) {
-            $sql .= " WHERE " . implode(' AND ', $this->where);
+        if ($this->wheres) {
+            $sql .= " WHERE " . implode(' AND ', $this->wheres);
         }
 
-        if ($this->orderBy) {
-            $sql .= " ORDER BY {$this->orderBy}";
-        }
-
-        if ($this->limit !== null) {
-            $sql .= " LIMIT {$this->limit}";
-            if ($this->offset !== null) {
-                $sql .= " OFFSET {$this->offset}";
-            }
-        }
-
-        return $sql;
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute($this->bindings);
     }
 }

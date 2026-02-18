@@ -1,37 +1,20 @@
 <?php
-// system/core/Model.php
-
 class Model
 {
-    protected $table;
+    protected static $table;
 
-    public function db()
+    public static function query()
     {
-        return Database::table($this->table);
+        return Database::table(static::$table);
     }
 
-    public function all()
+    public static function where($column, $value)
     {
-        return $this->db()->get();
+        return static::query()->where($column, $value);
     }
 
-    public function find($id)
+    public static function all()
     {
-        return $this->db()->where('id', '=', $id)->first();
-    }
-
-    public function create($data)
-    {
-        return $this->db()->insert($data);
-    }
-
-    public function updateWhere($id, $data)
-    {
-        return $this->db()->where('id', '=', $id)->update($data);
-    }
-
-    public function deleteWhere($id)
-    {
-        return $this->db()->where('id', '=', $id)->delete();
+        return static::query()->get();
     }
 }

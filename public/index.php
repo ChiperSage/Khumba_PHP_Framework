@@ -8,16 +8,15 @@ require BASE_PATH . '/system/core/Response.php';
 require BASE_PATH . '/system/core/Session.php';
 require BASE_PATH . '/system/core/Helper.php';
 require BASE_PATH . '/system/core/Config.php';
+require BASE_PATH . '/system/db/Database.php';
+require BASE_PATH . '/system/db/QueryBuilder.php';
 
 spl_autoload_register(function ($class) {
     $paths = [
         BASE_PATH . '/app/controller/',
         BASE_PATH . '/app/model/',
-        BASE_PATH . '/system/core/',
-        BASE_PATH . '/system/db/',
         BASE_PATH . '/system/middleware/',
     ];
-
     foreach ($paths as $path) {
         $file = $path . $class . '.php';
         if (file_exists($file)) {
