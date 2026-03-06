@@ -7,7 +7,7 @@ class AuthMiddleware
     {
         Session::start();
 
-        if (!Session::get('user')) {
+        if (!Auth::check()) {
             Response::redirect('/login');
         }
     }

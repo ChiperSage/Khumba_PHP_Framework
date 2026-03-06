@@ -16,19 +16,26 @@ if ($command === 'make:controller' && $name) {
         exit("Controller already exists\n");
     }
 
-    file_put_contents($file, "<?php
-
-class {$class} extends Controller
-{
-    public function index()
-    {
-        echo '{$class} ready';
-    }
-}
-");
+    $lower = strtolower($name);
+    file_put_contents($file, "<?php\n\nclass {$class} extends Controller\n{\n    public function index()\n    {\n        \$this->view('{$lower}');\n    }\n}\n");
     echo "Controller created: {$class}\n";
+    exit;
+}
+
+if ($command === 'make:model' && $name) {
+    $class = ucfirst($name);
+    $file  = __DIR__ . '/app/model/' . $class . '.php';
+
+    if (file_exists($file)) {
+        exit("Model already exists\n");
+    }
+
+    $table = strtolower($name) . 's';
+    file_put_contents($file, "<?php\n\nclass {$class} extends Model\n{\n    protected static \$table = '{$table}';\n}\n");
+    echo "Model created: {$class}\n";
     exit;
 }
 
 echo "Usage:\n";
 echo "  php khumba make:controller Name\n";
+echo "  php khumba make:model Name\n";
