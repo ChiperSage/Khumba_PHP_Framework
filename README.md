@@ -36,7 +36,7 @@ Khumba is built for exactly that. It combines the clean structure and productivi
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/your-username/khumba.git
+git clone https://github.com/chipersage/khumba.git
 cd khumba
 ```
 
