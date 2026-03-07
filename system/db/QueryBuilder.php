@@ -3,20 +3,37 @@ class QueryBuilder
 {
     protected $pdo;
     protected $table;
-    protected $wheres = [];
-    protected $bindings = [];
+    protected $wheres    = [];
+    protected $bindings  = [];
+    protected $columns   = '*';
     protected $limit;
     protected $order;
 
     public function __construct($pdo, $table)
     {
-        $this->pdo = $pdo;
+        $this->pdo   = $pdo;
         $this->table = $table;
+    }
+
+    /**
+     * Specify columns to select.
+     * Usage: ->select(['id', 'name', 'email'])
+     */
+    public function select($columns = [])
+    {
+        if (is_array($columns)) {
+            $this->columns = implode(', ', array_map(function($c) {
+                return "`$c`";
+            }, $columns));
+        } else {
+            $this->columns = $columns;
+        }
+        return $this;
     }
 
     public function where($column, $value, $operator = '=')
     {
-        $this->wheres[] = "$column $operator ?";
+        $this->wheres[]   = "$column $operator ?";
         $this->bindings[] = $value;
         return $this;
     }
@@ -35,16 +52,14 @@ class QueryBuilder
 
     protected function buildSelect()
     {
-        $sql = "SELECT * FROM {$this->table}";
+        $sql = "SELECT {$this->columns} FROM {$this->table}";
 
         if ($this->wheres) {
             $sql .= " WHERE " . implode(' AND ', $this->wheres);
         }
-
         if ($this->order) {
             $sql .= " " . $this->order;
         }
-
         if ($this->limit) {
             $sql .= " " . $this->limit;
         }
@@ -66,12 +81,26 @@ class QueryBuilder
         return $result ? $result[0] : null;
     }
 
+    public function count()
+    {
+        $sql = "SELECT COUNT(*) as total FROM {$this->table}";
+
+        if ($this->wheres) {
+            $sql .= " WHERE " . implode(' AND ', $this->wheres);
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($this->bindings);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int) $result['total'];
+    }
+
     public function insert($data)
     {
-        $columns = implode(',', array_keys($data));
+        $columns      = implode(',', array_keys($data));
         $placeholders = implode(',', array_fill(0, count($data), '?'));
 
-        $sql = "INSERT INTO {$this->table} ($columns) VALUES ($placeholders)";
+        $sql  = "INSERT INTO {$this->table} ($columns) VALUES ($placeholders)";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute(array_values($data));
     }
@@ -80,7 +109,7 @@ class QueryBuilder
     {
         $fields = [];
         foreach ($data as $key => $value) {
-            $fields[] = "$key = ?";
+            $fields[]         = "$key = ?";
             $this->bindings[] = $value;
         }
 

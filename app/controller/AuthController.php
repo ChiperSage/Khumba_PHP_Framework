@@ -6,8 +6,7 @@ class AuthController extends Controller {
     }
 
     public function login() {
-        SecurityHelper::verify_csrf();
-
+        // CSRF sudah diverifikasi otomatis oleh Router
         $username = $_POST['username'] ?? null;
 
         if (!$username) {
@@ -15,7 +14,6 @@ class AuthController extends Controller {
         }
 
         Session::set('user_id', $username);
-
         Response::redirect('');
     }
 

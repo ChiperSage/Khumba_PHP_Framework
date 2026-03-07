@@ -1,9 +1,10 @@
 <?php
 return [
-    'driver' => 'mysql',
-    'host' => '127.0.0.1',
-    'database' => 'khumba',
-    'username' => 'root',
-    'password' => '',
-    'charset' => 'utf8'
+    'driver'   => Env::get('DB_DRIVER', 'mysql'),
+    'host'     => Env::get('DB_HOST', '127.0.0.1'),
+    'port'     => Env::get('DB_PORT', '3306'),
+    'database' => Env::get('DB_NAME', ''),
+    'username' => Env::get('DB_USER', 'root'),
+    'password' => Env::get('DB_PASS', ''),
+    'charset'  => Env::get('DB_CHARSET', 'utf8'),
 ];

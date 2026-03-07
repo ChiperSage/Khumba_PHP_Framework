@@ -6,15 +6,20 @@ Env::load(BASE_PATH . '/.env');
 
 require BASE_PATH . '/system/core/ExceptionHandler.php';
 require BASE_PATH . '/system/core/Error.php';
+require BASE_PATH . '/system/core/Config.php';
 require BASE_PATH . '/system/core/Router.php';
 require BASE_PATH . '/system/core/Controller.php';
 require BASE_PATH . '/system/core/Response.php';
 require BASE_PATH . '/system/core/Session.php';
 require BASE_PATH . '/system/core/Helper.php';
-require BASE_PATH . '/system/core/Config.php';
 require BASE_PATH . '/system/core/SecurityHelper.php';
+require BASE_PATH . '/system/core/Auth.php';
+require BASE_PATH . '/system/core/Request.php';
+require BASE_PATH . '/system/core/Validate.php';
+require BASE_PATH . '/system/core/Validator.php';
 require BASE_PATH . '/system/db/Database.php';
 require BASE_PATH . '/system/db/QueryBuilder.php';
+require BASE_PATH . '/system/core/Model.php';
 
 header('X-Frame-Options: SAMEORIGIN');
 header('X-Content-Type-Options: nosniff');
