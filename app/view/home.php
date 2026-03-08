@@ -1,2 +1,2 @@
-<h1>Welcome to Khumba v1.0</h1>
+<h1>Welcome to Khumba</h1>
 <p>Lightweight. Pragmatic. Stable. Long-term.</p>

@@ -1,24 +1,31 @@
 <?php
-class AuthController extends Controller {
-
-    public function loginForm() {
-        $this->view('login');
+class AuthController extends Controller
+{
+    public function loginForm()
+    {
+        $this->layout('main', 'login', [
+            'title' => 'Login'
+        ]);
     }
 
-    public function login() {
+    public function login()
+    {
         // CSRF sudah diverifikasi otomatis oleh Router
-        $username = $_POST['username'] ?? null;
+        $v = Validate::check($_POST, [
+            'username' => ['required', 'min:3', 'max:50'],
+        ]);
 
-        if (!$username) {
-            return Response::json(['error' => 'Username required'], 422);
+        if ($v->hasError()) {
+            return $this->json(['errors' => $v->firstErrors()], 422);
         }
 
-        Session::set('user_id', $username);
-        Response::redirect('');
+        Session::set('user_id', $_POST['username']);
+        $this->redirect('');
     }
 
-    public function logout() {
+    public function logout()
+    {
         Session::destroy();
-        Response::redirect('login');
+        $this->redirect('login');
     }
 }
